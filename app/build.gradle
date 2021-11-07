@@ -8,6 +8,9 @@ android {
 
 
     defaultConfig {
+        configurations.all {
+            resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
+        }
         applicationId "org.evolvedigital.unscrambleit"
         minSdk 23
         targetSdk 30
