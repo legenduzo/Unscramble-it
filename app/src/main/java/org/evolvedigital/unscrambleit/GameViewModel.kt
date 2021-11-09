@@ -54,6 +54,17 @@ class GameViewModel : ViewModel() {
         } else false
     }
 
+    private fun increaseScore() {
+        _score += SCORE_INCREASE
+    }
+
+    fun isUserWordCorrect(playerWord: String): Boolean {
+        return if (playerWord.equals(currentWord, true)) {
+            increaseScore()
+            true
+        } else false
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d("GameFragment", "GameViewModel destroyed!")
