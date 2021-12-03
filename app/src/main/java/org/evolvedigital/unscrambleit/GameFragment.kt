@@ -41,32 +41,25 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.gameViewModel = viewModel
+
+        binding.maxNoOfWords = MAX_NO_OF_WORDS
+
 //        set up a click listener for submit and skip buttons
         binding.submit.setOnClickListener { onSubmitWord() }
         binding.skip.setOnClickListener { onSkipWord() }
 
-//        Update the UI
-        viewModel.score.observe(viewLifecycleOwner,
-            { newScore ->
-                binding.score.text = getString(R.string.score, newScore)
-            })
-    //        Observe the currentScrambledWord LiveData, passing in LifecycleOwner and observer
-               viewModel.currentScrambledWord.observe(viewLifecycleOwner,
-        { newWord ->
-            binding.textViewUnscrambledWord.text = newWord
-        })
-        viewModel.currentWordCount.observe(viewLifecycleOwner,
-            {newWordCount ->
-                binding.wordCount.text =
-                    getString(R.string.word_count, newWordCount, MAX_NO_OF_WORDS)
-            })
+        // Specify the fragment view as the lifecycle owner of the binding
+        // This is used so that the binding can observe LiveData updates
+        binding.lifecycleOwner = viewLifecycleOwner
+
 
     }
 
     /**
-    * Checks the user's word, and updates the score accordingly.
-    * Displays the next scrambled word.
-    */
+     * Checks the user's word, and updates the score accordingly.
+     * Displays the next scrambled word.
+     */
     private fun onSubmitWord() {
         val playerWord = binding.textInputEditText.text.toString()
 
@@ -92,14 +85,6 @@ class GameFragment : Fragment() {
         }
     }
 
-    /*
-     * Gets a random word for the list of words and shuffles the letters in it.
-     */
-    private fun getNextScrambledWord(): String {
-        val tempWord = allWordsList.random().toCharArray()
-        tempWord.shuffle()
-        return String(tempWord)
-    }
 
     /**
      * Creates and shows an AlertDialog with the final score.
@@ -132,11 +117,6 @@ class GameFragment : Fragment() {
      */
     private fun exitGame() {
         activity?.finish()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("GameFragment", "GameFragment Destroyed!")
     }
 
     /*
